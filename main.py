@@ -21,28 +21,11 @@ class User(db.Model):
         self.password = password
 
 @app.before_request
-def require_login():
-    allowed_routes = ['login', 'register']
+def require_register():
+    allowed_routes = ['register']
     if request.endpoint not in allowed_routes and 'email' not in session:
-        return redirect('/login')
-
-
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = User.query.filter_by(email=email).first()
-        if user and user.password == password:
-            session['email'] = email
-            flash("Logged in")
-            return redirect('/')
-        else:
-            flash('User password incorrect, or user does not exist', 'error')
-
-    return render_template('login.html')
-
-
+        return redirect('/register')
+        
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
@@ -62,11 +45,6 @@ def register():
             return "<h1>Duplicate user</h1>"
 
     return render_template('register.html')
-
-@app.route('/logout')
-def logout():
-    del session['email']
-    return redirect('/')
 
 if __name__ == '__main__':
     app.run()
