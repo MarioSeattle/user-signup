@@ -32,18 +32,6 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        #verify = request.form['verify']
-
-
-        existing_user = User.query.filter_by(email=email).first()
-        if not existing_user:
-            new_user = User(name, email, password)
-            db.session.add(new_user)
-            db.session.commit()
-            session['email'] = email
-            return redirect('/')
-        else:
-            return "<h1>Duplicate user</h1>"
 
     return render_template('register.html')
 
