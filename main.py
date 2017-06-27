@@ -25,18 +25,19 @@ def require_register():
     allowed_routes = ['register']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/register')
-        
+
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
+        name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        verify = request.form['verify']
+        #verify = request.form['verify']
 
 
         existing_user = User.query.filter_by(email=email).first()
         if not existing_user:
-            new_user = User(email, password)
+            new_user = User(name, email, password)
             db.session.add(new_user)
             db.session.commit()
             session['email'] = email
