@@ -6,7 +6,6 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://signup:sounders@localhost:8889/signup'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-app.secret_key = 'y337kGcys&zP3B'
 
 class User(db.Model):
 
@@ -20,15 +19,17 @@ class User(db.Model):
         self.username = username
         self.password = password
         self.email = email
-        
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    if request.method == 'POST':
-        username = request.form['name']
-        password = request.form['password']
-        email = request.form['email']
 
-    return render_template('register.html')
+@app.route('/', methods=['POST', 'GET'])
+def index():
+
+
+
+@app.route('/register')
+def confirmation():
+    title = "Welcome!"
+    username = request.args.get('username')
+    return render_template('welcome.html', title=title, username=username)
 
 if __name__ == '__main__':
     app.run()
