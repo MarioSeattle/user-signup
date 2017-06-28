@@ -31,7 +31,7 @@ def index():
     else:
         return render_template('register.html')
 
-@app.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
 def confirmation():
     title = "Welcome!"
     username = request.args.get('username')
