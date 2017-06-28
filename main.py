@@ -11,27 +11,22 @@ app.secret_key = 'y337kGcys&zP3B'
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True)
-    email = db.Column(db.String(120), unique=True)
+    username = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
+    email = db.Column(db.String(120), unique=True)
 
-    def __init__(self, name, email, password):
-        self.name = name
-        self.email = email
+
+    def __init__(self, username, password, email):
+        self.username = username
         self.password = password
-
-@app.before_request
-def require_register():
-    allowed_routes = ['register']
-    if request.endpoint not in allowed_routes and 'email' not in session:
-        return redirect('/register')
-
+        self.email = email
+        
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
+        username = request.form['name']
         password = request.form['password']
+        email = request.form['email']
 
     return render_template('register.html')
 
