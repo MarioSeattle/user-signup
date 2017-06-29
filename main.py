@@ -5,60 +5,52 @@ import cgi
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-@app.route("/", methods=['POST','GET'])
+@app.route('/', methods=['POST','GET'])
 def index():
-    if request.method=="POST":
-        #initialize error vairables as empty strings
-        username_error = ""
-        password_error = ""
-        verify_error = ""
-        #Input from the form (POST)
-        username = cgi.escape(request.form['username'], quote=True)
-        password = cgi.escape(request.form['password'], quote=True)
-        verify = cgi.escape(request.form['verify'], quote=True)
-        #Validation
-        ans = "good"
-        ans = validateUserName(username)
-        ans = validatePassword(password)
-        ans = validateVerify(verify)
-
-        if ans == "good":
-            return render_template('welcome.html', user_name=username,
- user_name_error=username_error, password_error=password_error,
- verify_error=verify_error)
-        else:
-            return redirect('/error?username=' + username + ' ' + ans)
-    else:
+    if request.method == "GET":
         return render_template('register.html')
+    #initialize error vairables as empty strings
+    
+    #Input from the form (POST)
+    username = request.form['username']
+    password = request.form['password']
+    verify = request.form['verify']
+    username_error = ""
+    password_error = ""
+    verify_error = ""
 
-@app.route('/register', methods=['POST', 'GET'])
+    #def validateUserName(username):
+    #if username and not username.isspace():
+    if " " in username:
+        username_error = "Username cannot contain any spaces."
+    #else:
+    #    username_error = "Username cannot be blank."
+    if len(username) <= 3 and len(username) >= 20:
+        username_error = "Username must be between 3 and 20 characters."
+
+    #def validatePassword(passWord):
+    #if username and not username.isspace():
+    if len(password) <= 3 and len(password) >= 20:
+        password_error = "Password must be between 3 and 20 characters."
+    if " " in password:
+        password_error = "Password cannot contain any spaces."
+    #else:
+    #    password_error = "Password cannot be blank."
+
+    #def validateVerify(verify):
+    #if verify and not verify.isspace():
+    if verify != password:
+        verify_error= "Password does not match!"
+    if not username_error and not password_error and not verify_error: 
+        return redirect('/welcome?username={0}'.format(username))
+    else:
+        return render_template('register.html', username=username, username_error=username_error, password_error=password_error, verify_error=verify_error)
+
+@app.route('/welcome')
 def confirmation():
     title = "Welcome!"
     username = request.args.get('username')
     return render_template('welcome.html', title=title, username=username)
-
-def validateUserName(userName):
-    if userName and not userName.isspace():
-        if " " in username:
-            return "Username cannot contain any spaces."
-    else:
-        return "Username cannot be blank."
-
-def validatePassword(passWord):
-    if userName and not userName.isspace():
-        if not (3 <= number <= 20):
-            return "Password must be between 3 and 20 characters."
-        if " " in password:
-            return "Password cannot contain any spaces."
-    else:
-        return "Password cannot be blank."
-
-def validateVerify(verify):
-    if verify and not verify.isspace():
-        if " " in verify:
-            return "Verify password cannot contain any spaces."
-    else:
-        return "Verify password cannot be blank."
 
 
 app.run()
