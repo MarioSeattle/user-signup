@@ -9,8 +9,6 @@ app.config['DEBUG'] = True
 def index():
     if request.method == "GET":
         return render_template('register.html')
-    #initialize error vairables as empty strings
-    
     #Input from the form (POST)
     username = request.form['username']
     password = request.form['password']
@@ -18,26 +16,17 @@ def index():
     username_error = ""
     password_error = ""
     verify_error = ""
-
-    #def validateUserName(username):
     #if username and not username.isspace():
     if " " in username:
         username_error = "Username cannot contain any spaces."
-    #else:
     #    username_error = "Username cannot be blank."
     elif len(username) < 3 or len(username) > 20:
         username_error = "Username must be between 3 and 20 characters."
-
-    #def validatePassword(passWord):
     #if username and not username.isspace():
     if len(password) < 3 or len(password) > 20:
         password_error = "Password must be between 3 and 20 characters."
     elif " " in password:
         password_error = "Password cannot contain any spaces."
-    #else:
-    #    password_error = "Password cannot be blank."
-
-    #def validateVerify(verify):
     #if verify and not verify.isspace():
     if verify != password:
         verify_error= "Password does not match!"
@@ -45,12 +34,11 @@ def index():
         return redirect('/welcome?username={0}'.format(username))
     else:
         return render_template('register.html', username=username, username_error=username_error, password_error=password_error, verify_error=verify_error)
-
+#this handler will render the welcome user 
 @app.route('/welcome')
 def welcome():
     title = "Welcome!"
     username = request.args.get('username')
     return render_template('welcome.html', title=title, username=username)
-
 
 app.run()
